@@ -3,7 +3,10 @@
 Trie::Trie() {
     root = new Node;
     root->isLeaf = true;
-    root->parent = NULL;
+    root->parent = nullptr;
+    for (int i = 0; i < ALPH_SIZE; i++) {
+        root->children[i] = nullptr;
+    }
 }
 
 Trie::~Trie() {
@@ -11,10 +14,22 @@ Trie::~Trie() {
 }
 
 Trie::insertWord(string word) {
-    w = boost::algorithm::to_lower(word); //преобразование к нижнему регистру (для единообразия)
+    w = boost::algorithm::to_lower(word); //преобразование к нижнему регистру (во избежание неопределенностей с индексами)
     int n = w.length(); //длина слова
-    int index = (int) w[0] - 97; //номер очередного символа в алфавите (номер в табл. ASCII - 97)
+    int index; //номер очередного символа в алфавите (номер в табл. ASCII - 97)
 
+    Node *parent = root;
+    Node *current = root;
+
+    for (int i = 0; i < n; i++) {
+        index = (int) w[i] - 97;
+        current = new Node;
+        current->parent = parent;
+        parent->isLeaf = false;
+        current->Ch = w[i];
+        parent->children[index] = current;
+        parent = current;
+    }
 }
 
 Trie::removeWord() {
