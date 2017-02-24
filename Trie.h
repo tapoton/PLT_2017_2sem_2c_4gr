@@ -1,5 +1,5 @@
 #include <iostream>
-#define ALPH_SIZE (26)
+#define ALPH_SIZE 26
 using namespace std;
 
 struct Node {
@@ -17,6 +17,6 @@ public:
     ~Trie();
 
     void insertWord(string word);
-    string searchBySubString(string subString);
+    //string searchBySubString(string subString);
     void removeWord();
 };
