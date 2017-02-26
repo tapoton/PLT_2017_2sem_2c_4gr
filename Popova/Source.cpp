@@ -43,12 +43,7 @@ void print(string prefix, Node const& node) {
 }
 
 bool is_consist(string set, string word) {
-	sort(set.begin(), set.end());
-	sort(word.begin(), word.end());
-	if (word.find_first_not_of(set) == string::npos)
-		return true;
-	else
-		return false;
+	return (word.find_first_not_of(set) == string::npos);
 }
 
 void search (string prefix, string set, Node const& node) {
