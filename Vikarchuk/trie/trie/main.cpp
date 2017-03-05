@@ -31,7 +31,7 @@ public:
 	{
 		node->prefix_count = 0;
 		node->is_end = true;
-		for (unsigned int i = 0; i <= 26; i++)
+		for (unsigned int i = 0; i < ALPHABET_SIZE; i++)
 		{
 			node->child[i] = NULL;
 		}
@@ -51,6 +51,7 @@ public:
 				init(current->child[letter]);
 			}
 			current->child[letter]->prefix_count++;
+			current->is_end = false;
 			current = current->child[letter];
 		}
 		current->is_end = true;
