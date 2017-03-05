@@ -21,7 +21,7 @@ public:
 		head = new Node;
 		head->prefix_count = 0;
 		head->is_end = false;
-		for (unsigned int i = 0; i <= 26; i++)
+		for (unsigned int i = 0; i < ALPHABET_SIZE; i++)
 		{
 			head->child[i] = NULL;
 		}
@@ -30,7 +30,7 @@ public:
 	void init(Node *node)
 	{
 		node->prefix_count = 0;
-		node->is_end = true;
+		node->is_end = false;
 		for (unsigned int i = 0; i < ALPHABET_SIZE; i++)
 		{
 			node->child[i] = NULL;
@@ -51,7 +51,6 @@ public:
 				init(current->child[letter]);
 			}
 			current->child[letter]->prefix_count++;
-			current->is_end = false;
 			current = current->child[letter];
 		}
 		current->is_end = true;
