@@ -4,7 +4,6 @@
 using namespace std;
 
 const int alphabet = 26;
-const int max_word_length = 10;
 const int first = 'a';
 
 class TrieTree
@@ -16,13 +15,40 @@ class TrieTree
 	};
 
 	Node* head = NULL;
+	
+	string shortest(Node* temp, string current_word = "") {
+		if (temp->isEnd) return current_word;
+		string shortest_word;
+
+		for (unsigned int i = 0; i < alphabet; i++) {
+			if (temp->child[i] != NULL) {
+				current_word += temp->child[i]->key;
+				string word = shortest(temp->child[i], current_word);
+				if (shortest_word.length() > word.length() || shortest_word.length() == 0) {
+					shortest_word = word;
+				}
+				if (current_word.length() == 1 && shortest_word.length() > 0) {
+					current_word = "";
+				}
+			}
+		}
+		return shortest_word;
+	}
+
+	void show(Node *temp, unsigned int level = 0) {
+		if (temp == NULL) {
+			return;
+		}
+		for (unsigned int i = 1; i < level; i++) {
+			cout << "\t";
+		}
+		cout << temp->key << endl;
+		for (int i = 0; i < alphabet; i++) {
+			show(temp->child[i], level + 1);
+		}
+	}
 
 public:
-
-	Node* getHead()
-	{
-		return head;
-	}
 
 	void createNode(Node *lead, int index, char c, bool check) {
 		Node* follower = new Node;
@@ -62,53 +88,12 @@ public:
 	}
 
 
-	void show(Node *temp, unsigned int level = 0)
-	{
-		if (temp == NULL) {
-			return;
-		}
-		for (unsigned int i = 1; i < level; i++) {
-			cout << "\t";
-		}
-		cout << temp->key << endl;
-		for (int i = 0; i < alphabet; i++) {
-			show(temp->child[i], level + 1);
-		}
+	void show() {
+		show(head);
 	}
-
-	int globalLevel = max_word_length;
-	char str0[max_word_length];
-	char str[max_word_length];
-
-	void shortest(Node *temp, int level = 0) {
-		if (temp == NULL) {
-			return;
-		}
-		for (unsigned int i = 0; i < alphabet; i++) {
-			if (temp->child[i] != NULL) {
-				str0[level] = temp->child[i]->key;
-				if (temp->child[i]->isEnd == true) {
-					globalLevel = level;
-					strncpy(str, str0, level + 1);
-					return;
-				}
-				else {
-					if (level < globalLevel) {
-						shortest(temp->child[i], level + 1);
-					}
-					else return;
-				}
-			}
-		}
-		return;
-	}
-
-	void betterShort() {
-		cout << "\nShortest: ";
-		for (int i = 0; i <= globalLevel; i++) {
-			cout << str[i];
-		}
-		cout << endl;
+	
+	string shortest() {
+		return shortest(head);
 	}
 };
 
@@ -121,10 +106,9 @@ void main() {
 		cin >> str;
 		objTree.insertWord(str);
 	}
-	objTree.show(objTree.getHead());
+	objTree.show();
 
-	objTree.shortest(objTree.getHead());
-	objTree.betterShort();
+	cout << "Shortest = " << objTree.shortest() << endl;
 
 	system("pause");
 }
