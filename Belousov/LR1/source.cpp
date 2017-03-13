@@ -49,7 +49,7 @@ class TrieTree
 					}
 			
 				}
-				else kol_sogl(temp->child[i], S);
+				kol_sogl(temp->child[i], S);
 			}
 		}		
 		return S;
