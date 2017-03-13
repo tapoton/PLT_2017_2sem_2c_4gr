@@ -25,8 +25,6 @@ class TrieTree
 		for (unsigned int i = 0; i < alphabet; i++) {
 			if (temp->child[i] != NULL) {
 				current_word += temp->child[i]->key;
-				cout << current_word << endl;
-
 				string word = shortest(temp->child[i], current_word);
 				if (shortest_word.length() > word.length() || shortest_word.length() == 0) {
 					shortest_word = word;
