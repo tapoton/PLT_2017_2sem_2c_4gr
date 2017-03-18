@@ -1,6 +1,3 @@
-// Example input:
-// x750xh55 abc1 name1 j937tt86 abc2 name2 h649jj36 abc3 name3 j856ps12 abc4 name4 p098zb77 abc5 name5 k894kk30 abc6 name6 e909io77 abc7 name7 u234nj55 abc8 name8
-
 #include <iostream>
 #include <string>
 
@@ -112,8 +109,11 @@ void main() {
 
 	string number, mark, name;
 	cout << "Enter a number (" << keySize << " symbols), a mark and a name:" << endl;
-	while (cin.peek() != '\n') {
-		cin >> number >> mark >> name;
+
+	while (true) {
+		cin >> number;
+		if (number == ".") break;
+		else cin >> mark >> name;
 		if (number.length() != keySize) {
 			cout << "Wrong number! (" << keySize << " symbols)" << endl;
 		}
@@ -135,3 +135,15 @@ void main() {
 
 	system("pause");
 }
+
+// Example input:
+/*
+x750xh55 abc1 name1
+j937tt86 abc2 name2
+h649jj36 abc3 name3
+j856ps12 abc4 name4
+p098zb77 abc5 name5
+k894kk30 abc6 name6
+e909io77 abc7 name7
+u234nj55 abc8 name8
+*/
