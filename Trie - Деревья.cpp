@@ -85,17 +85,27 @@ void Even_Del(Node* trie)
 			childs_of_child--;
 			while (!ptr->child[i]->child[j])
 				j++;
+			if (ptr->child[i]->child[j]->end)
+				ptr->child[i]->child[j]->end = NULL;
 			if (Num_Of_Childs(ptr->child[i]->child[j]))
 				Even_Del(ptr->child[i]->child[j]);
 			else
 			{
 				delete ptr->child[i]->child[j];
 				ptr->child[i]->child[j] = NULL;
-				if (!Num_Of_Childs(ptr->child[i]))
-				{
-					delete ptr->child[i];
-					ptr->child[i] = NULL;
-				}
+			}
+			if (!Num_Of_Childs(ptr->child[i]) && !ptr->child[i]->end)
+			{
+				delete ptr->child[i];
+				ptr->child[i] = NULL;
+			}
+			if (!Num_Of_Childs(ptr) && ptr->parent)
+			{
+				int k = 0;
+				while (ptr->parent->child[k] != ptr)
+					k++;
+				ptr->parent->child[k] = NULL;
+				delete ptr;
 			}
 			j++;
 		}
