@@ -4,29 +4,32 @@
 using namespace std;
 
 const int hashTableSize = 17;
-const int keySize = 8;
+
+struct carInfo {
+	string key;
+	string mark;
+	string name;
+};
 
 class hashTable {
 
 	struct Node {
-		string key;
-		string mark;
-		string name;
+		carInfo info;
 		Node* next;
 	};
 	
 	Node* table[hashTableSize];
 
 	void createNode(Node* current, string key, string mark, string name) {
-		current->key = key;
-		current->mark = mark;
-		current->name = name;
+		current->info.key = key;
+		current->info.mark = mark;
+		current->info.name = name;
 		current->next = NULL;
 	}
 
 	int hash(string key) {
 		int s = 0;
-		for (int i = 0; i < keySize; i++) {
+		for (unsigned int i = 0; i < key.length(); i++) {
 			s += key[i];
 		}
 		return s % hashTableSize;
@@ -37,11 +40,11 @@ class hashTable {
 			return;
 		}
 		for (unsigned int i = 0; i < level; cout << "\t", i++);
-		cout << temp->key << endl;
+		cout << temp->info.key << endl;
 		for (unsigned int i = 0; i < level; cout << "\t", i++);
-		cout << temp->mark << endl;
+		cout << temp->info.mark << endl;
 		for (unsigned int i = 0; i < level; cout << "\t", i++);
-		cout << temp->name << endl;
+		cout << temp->info.name << endl;
 
 		show(temp->next, level + 1);
 		cout << endl;
@@ -75,23 +78,25 @@ public:
 		}
 	}
 
-	void search(string key) {
-		string mark, name;
+	carInfo search(string key) {
+		carInfo car;
 		int index = hash(key);
 		Node* p = new Node;
 		p = table[index];
-		while (p->key != key && p->next) {
-			p = p->next;
+		if (p) {
+			while (p->info.key != key && p->next) {
+				p = p->next;
+			}
+			if (p->next == NULL && p->info.key != key) {
+				cout << "Wrong key!" << endl;
+			}
+			else {
+				car.mark = p->info.mark;
+				car.name = p->info.name;
+			}
 		}
-		if (p->next == NULL && p->key != key) {
-			cout << "Wrong key!" << endl;
-		}
-		else {
-			mark = p->mark;
-			name = p->name;
-			cout << "Mark: " << mark << endl;
-			cout << "Name: " << name << endl;
-		}
+		else cout << "Wrong key!" << endl;
+		return car;
 	}
 	
 	void show() {
@@ -108,31 +113,25 @@ void main() {
 	hashTable table;
 
 	string number, mark, name;
-	cout << "Enter a number (" << keySize << " symbols), a mark and a name:" << endl;
+	cout << "Enter a number, a mark and a name:" << endl;
 
 	while (true) {
 		cin >> number;
 		if (number == ".") break;
 		else cin >> mark >> name;
-		if (number.length() != keySize) {
-			cout << "Wrong number! (" << keySize << " symbols)" << endl;
-		}
-		else {
-			table.insertNode(number, mark, name);
-		}
+		table.insertNode(number, mark, name);
 	}
 
 	table.show();
 
+	carInfo car;
 	cout << "\nEnter a key to search: ";
 	cin >> number;
-	if (number.length() != keySize) {
-		cout << "Wrong key! (" << keySize << " symbols)" << endl;
+	car = table.search(number);
+	if (car.mark.length() > 0 && car.name.length() > 0) {
+		cout << "Mark: " << car.mark << endl;
+		cout << "Name: " << car.name << endl;
 	}
-	else {
-		table.search(number);
-	}
-
 	system("pause");
 }
 
