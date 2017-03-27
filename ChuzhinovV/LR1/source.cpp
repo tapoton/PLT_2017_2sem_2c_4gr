@@ -39,7 +39,7 @@ public:
 	{
 		if (p == NULL)return "";
 		string s = "";
-		for (unsigned int i = 0; i < p->children().size();i++)
+		for (unsigned int i = 0; i < p->children().size(); i++)
 		{
 			if (s.size() < maxWord((p->children())[i]).size())
 				s = maxWord((p->children())[i]);
@@ -113,16 +113,14 @@ bool Trie::searchWord(string s)
 		{
 			Node* tmp = current->findChild(s[i]);
 			if (tmp == NULL)
-				return false;
+				return 0;
 			current = tmp;
 		}
 
-		if (current->wordMarker())
-			return true;
-		else
-			return false;
+		return current->wordMarker();
+		
 	}
-    return false;
+	return 0;
 }
 
 int main()
@@ -135,10 +133,10 @@ int main()
 	cout << endl;
 	string s = trie->maxWord(trie->haveRoot());
 	cout << "Max word = ";
-	for (unsigned int i = 1;i < s.size();i++)
+	for (unsigned int i = 1; i < s.size(); i++)
 	{
 		cout << s[i];
-    }
+	}
 	cout << endl;
 	delete trie;
 	system("pause");
