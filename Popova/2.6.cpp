@@ -12,31 +12,18 @@ using namespace std;
 const int HashTableSize = 5;
 
 
-class Node {
-	friend class HashTable;
+struct Film {
 	string Name;
 	string Director;
 	string Starring;
 	string Legend;
-	Node* next;
-public:
-	Node() {};
-	Node (string name, string director, string starring, string legend) {
-		Name = name;
-		Director = director;
-		Starring = starring;
-		Legend = legend;
-		next = NULL;
-	}
-	void getInfo() {
-		cout << "\n Title: " << Name;
-		cout << "\n Directed by: " << Director;
-		cout << "\n Starring: " << Starring;
-		cout << "\n Plot: " << Legend << endl;
-	}
 };
 
 class HashTable {
+        struct Node {
+		Film film;
+		Node* next;
+	};
 	Node* Cell[HashTableSize];
 	int Hash(string key) {
 		int h = 0;
@@ -44,6 +31,19 @@ class HashTable {
 			h += key[i];
 		}
 		return h%HashTableSize;
+	}
+	void createNode(Node* curr, string name, string director, string starring, string legend) {
+		curr->film.Name = name;
+		curr->film.Director = director;
+		curr->film.Starring = starring;
+		curr->film.Legend = legend;
+		curr->next = NULL;
+	}
+	void getInfo(Node curr) {
+		cout << "\n Title: " << curr.film.Name;
+		cout << "\n Directed by: " << curr.film.Director;
+		cout << "\n Starring: " << curr.film.Starring;
+		cout << "\n Plot: " << curr.film.Legend << endl;
 	}
 public:
 	HashTable() {
@@ -56,43 +56,47 @@ public:
 	{
 		int index = Hash(key);
 		if (!Cell[index]) {
-			Cell[index] = new Node(key, director, starring, legend);
+			Node *p = new Node;
+			createNode(p, key, director, starring, legend);
+			Cell[index] = p;
 			return;
 		}
 		Node* p = Cell[index];
 		while (p->next) {
 			p = p->next;
 		}
-		p->next = new Node(key, director, starring, legend);
+		Node* pull = new Node;
+		createNode(pull, key, director, starring, legend);
+		p->next = pull;
 	}
 
 	Node searchFilm(string key)
 	{
-		Node film;
+		Node result;
 		int index = Hash(key);
 		Node* p = Cell[index];
 		if (p) {
-			while (p->Name != key && p->next) {
+			while (p->film.Name != key && p->next) {
 				p = p->next;
 			}
-			if (!p->next && p->Name != key) {
+			if (!p->next && p->film.Name != key) {
 				cout << '\n' << key << " was not found\n";
 			}
 			else {
 				cout << '\n' << key << " was found!\n";
-				film.Name = p->Name;
-				film.Director = p->Director;
-				film.Starring = p->Starring;
-				film.Legend = p->Legend;
-				film.getInfo();
+				result.film.Name = p->film.Name;
+				result.film.Director = p->film.Director;
+				result.film.Starring = p->film.Starring;
+				result.film.Legend = p->film.Legend;
+				getInfo(result);
+
 			}
 		}
 		else {
 			cout <<'\n'<< key <<" was not found\n";
 		}
-		return film;
+		return result;
 	}
-
 };
 
 void main() {
