@@ -1,0 +1,120 @@
+include<iostream>
+#include<string>
+
+using namespace std;
+
+const int n = 26;
+
+class trie
+{
+public:
+	struct Node
+	{
+		char value; 
+		Node *child[n];
+	} *head;
+
+
+
+	trie()
+	{
+		head = new Node;
+		head->value = 0;
+		for ( int i = 0; i < n; i++)
+		{
+			head->child[i] = NULL;
+		}
+	}
+
+	void init(Node *node, char a)
+	{
+		node->value = a;
+		for (int i = 0; i < n; i++)
+		{
+			node->child[i] = NULL;
+		}
+	}
+
+	void insert(string word)
+	{
+		Node *current = head;
+
+		for (int i = 0; i < word.length(); i++)
+		{
+			int letter = (int)word[i] - (int)'a';
+			if (current->child[letter] == NULL)
+			{
+				current->child[letter] = new Node;
+				init(current->child[letter], word[i]);
+			}
+			//current->child[letter]->value =word[i];
+			current = current->child[letter];
+		}
+	};
+
+	bool noChild(Node* newn)
+	{
+		for (int i = 0; i < n; i++)
+		{
+			if (newn->child[i])
+				return 0;
+		}
+		return 1;
+	};
+	void deleteEven(Node *newr, int i) // функция удаления веток чётной длины
+	{
+		int k;
+		for ( k = 0; k < n; k++)
+		{
+			if (newr->child[k] != NULL)
+			{
+				deleteEven(newr->child[k], ++i); // вызываем функцию от потомка и удавиваем номер буквы i чтобы потом при удалении всего слова очередная буква была чётной 
+				i *= 2;
+			}
+		}
+			if ((i % 2 == 0)&&(noChild(newr)))
+			{
+				
+				 delete newr ;
+			}
+		
+	};
+
+	void newdelete()
+	{
+		Node* newr = head;
+		deleteEven(newr, 0);
+	};
+	bool search(string word)
+	{
+			Node *current = head;
+
+			for (int i = 0; i < word.length(); i++)
+			{
+				int letter = (int)word[i] - (int)'a';
+				if ((current->child[letter] == NULL)||(current->child[letter]->value != word[i]))
+					return 0;
+				current = current->child[letter];
+			}
+			return 1;
+	};
+};
+int main()
+{
+	trie Words;
+
+	string word;
+	cout << "Enter words, then enter 0:\n";
+	do
+	{
+		cin >> word;
+		if (word != "0")
+			Words.insert(word);
+	} while (word != "0");
+	Words.newdelete();
+	cout << "enter the word to check" << endl;
+	cin >> word;
+	(Words.search(word)) ? cout << "yes" : cout << "no";
+	system("pause");
+	return 0;
+}
