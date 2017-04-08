@@ -1,6 +1,6 @@
 
 
-/*Лаба 1: в нагруженном дереве найти слово максимальной длинны*/
+/*Г‹Г ГЎГ  1: Гў Г­Г ГЈГ°ГіГ¦ГҐГ­Г­Г®Г¬ Г¤ГҐГ°ГҐГўГҐ Г­Г Г©ГІГЁ Г±Г«Г®ГўГ® Г¬Г ГЄГ±ГЁГ¬Г Г«ГјГ­Г®Г© Г¤Г«ГЁГ­Г­Г»*/
 
 
 #include<iostream>
@@ -55,8 +55,13 @@ void insertWord(string word,Node*temp)
 
 string longest(Node* temp, string current_word = "") 
 {
-	if (temp->eow) 
-		return current_word;
+	bool check=true;
+	for (int i = 0; i < apb; i++)
+		if (temp->child[i] != NULL)
+			check = false;
+	if (check)
+		return current_word; 
+		
 	
 	string longest_word;
 
@@ -100,6 +105,7 @@ void main()
 	insertWord("brown", &trie);
 	insertWord("author", &trie);
 	insertWord("austroneer",&trie);
+        insertWord("austroneerqr",&trie);
 	insertWord("bowling", &trie);
 	insertWord("home", &trie);
 	show(&trie);
