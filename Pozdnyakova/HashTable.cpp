@@ -1,94 +1,121 @@
 #include <iostream>
 #include <fstream>
+#include <string.h>
+
 using namespace std;
 
-const int tableSize = 107;
-const int wordLength = 30;
+const unsigned int tableSize = 53;
 
-class HashTable {
+struct Node
+{
+    unsigned int count;
+    string word;
+    Node* next;
+};
+
+class HashTable
+{
 private:
-    unsigned int count[tableSize];
-    char words[tableSize][wordLength];
+    Node* list[tableSize];
+    
+    unsigned int hashFunction(string word)
+    {
+        unsigned int hash =0;
+        for (unsigned int i=0; i < word.length(); i++) hash+=(char)word[i];
+        return hash%tableSize;
+    }
+    
+    void addNew (unsigned int hash, string key)
+    {
+        Node* newNode = new Node;
+        newNode->count = 1;
+        newNode->word = key;
+        newNode->next = list[hash];
+        list[hash] = newNode;
+    }
+    
+    Node* searchWord (unsigned int hash, string key)
+    {
+        Node* temp = list[hash];
+        while (temp)
+        {
+            if (temp->word == key) return temp;
+            temp=temp->next;
+        }
+        return nullptr;
+    }
     
 public:
-    HashTable()
+    
+    void addNode (string key)
     {
-        for (unsigned int i = 0; i < tableSize; i++ )
-        {
-            count[i] = 0;
-            words[i][1] = '\0';
-        }
+        unsigned int hash = hashFunction(key);
+        Node* found = searchWord(hash, key);
+        if (!found) addNew(hash, key);
+            else found -> count++;
     }
     
-    unsigned int HashFunction(const char *word)
+    void info (Node* current)
     {
-        unsigned int hash = 0;
-        for(; *word; word++)
-            hash+= (unsigned char)(*word);
-        return hash % tableSize;
-    }
-    
-    void insertValue (unsigned int HashValue, const char* key)
-    {
-        count[HashValue]=1;
-        for(unsigned int i=0; *key; key++, i++) words[HashValue][i]= *key;
-    }
-    
-    void increaseValue (unsigned int hashValue)
-    {
-        count[hashValue]++;
-    }
-    
-    void hasKey (const char* key)
-    {
-        unsigned int hashValue = HashFunction(key);
-        if (count[hashValue]==0) insertValue(hashValue, key);
-            else increaseValue(hashValue);
+        cout << "\nThe word '" << current->word << "' repeats ";
+        cout << current->count << " time(s)."<< endl;
     }
     
     void print ()
     {
-        for (unsigned int i=0; i< tableSize; i++)
-            if (count[i]!=0)
-            {   cout <<"\nThe word '";
-                unsigned int j=0;
-                while (words[i][j]!='\0') {cout << words[i][j]; j++;}
-                cout << "' repeats "<< count[i] << " times.";
+        for (unsigned int i =0; i< tableSize; i++)
+            if (list[i])
+            {
+                Node* tmp = list[i];
+                cout << "\nHash: " << i;
+                while (tmp)
+                {
+                    info(tmp);
+                    tmp=tmp -> next;
+                }
             }
     }
-    
 };
 
+bool onlyLetters (string buffer)
+{
+    unsigned int i=0;
+    while (i< buffer.length())
+    {
+        if (buffer[i]<'A' || (buffer[i]>'Z' && buffer[i]<'a') || buffer[i]>'z') return false;
+        i++;
+    }
+    return true;
+}
+
 int main() {
-    cout << "\nEnter the path to the file: ";
+    cout << "\nEnter the path to the file: " << endl;
     string path;
     getline (cin, path);
     ifstream inputFile (path);
     if (!inputFile) {
-        cout << "\nError opening file! Try again.";
+        cout << "\nError opening file! Try again."<< endl;
         return -1;
     }
-    cout << "\nThe file was opened successfully.";
+    cout << "\nThe file was opened successfully." << endl;
     
-    HashTable hashTable;
-    char buffer[wordLength] = "\0", ch = inputFile.get();
-    unsigned int index=0;
+    HashTable table;
+    string buffer = "";
+    char ch = inputFile.get();;
     
     while (!inputFile.eof())
     {
-        if (ch!=' ' && ch!=',' && ch!=',' && ch!=':' && ch!=';' && ch!='\n')
+        if ((ch>='A' && ch<='Z') || (ch>='a' && ch<='z')) buffer= buffer + ch;
+        else
         {
-            buffer[index]=ch;
-            index++;
-        } else {
-            buffer[index+1]='\0';
-            if (buffer[0]>'A' && buffer[0]<'z') hashTable.hasKey(buffer);
-            
-            for (unsigned int i=0; i< index; buffer[i]='\0', i++);
-            index=0;
+            if (!buffer.empty() && onlyLetters(buffer)) table.addNode(buffer);
+            buffer.clear();
         }
         ch = inputFile.get();
     }
-    hashTable.print();
+    if (!buffer.empty() && onlyLetters(buffer)) table.addNode(buffer);
+    buffer.clear();
+
+    table.print();
     return 0;
 }
