@@ -4,12 +4,12 @@
 
 using namespace std;
 
-const int ALPHABET_SIZE = 26;
+const int a_s = 26;
 
 struct Node {
 	bool is_end = false;
 	int prefix_count = 0;
-	Node* child[ALPHABET_SIZE] = {};
+	Node* child[a_s] = {};
 };
 
 
@@ -31,7 +31,7 @@ void print(string prefix, Node const& node) {
 	if (node.is_end) {
 		cout << prefix<<'\n';
 	}
-	for (char index = 0; index < ALPHABET_SIZE; ++index) {
+	for (char index = 0; index < a_s; ++index) {
 		char next = 'a' + index;
 		Node const* Child = node.child[index];
 		if (Child) {
@@ -43,14 +43,19 @@ void print(string prefix, Node const& node) {
 }
 
 bool is_consist(string set, string word) {
-	return (word.find_first_not_of(set) == string::npos);
+	sort(set.begin(), set.end());
+	sort(word.begin(), word.end());
+	if (word.find_first_not_of(set) == string::npos)
+		return true;
+	else
+		return false;
 }
 
 void search (string prefix, string set, Node const& node) {
 	if (is_consist(set, prefix) && node.is_end) {
 		cout << prefix << " consists of letters from the set\n";
 	}
-	for (char index = 0; index < ALPHABET_SIZE; ++index) {
+	for (char index = 0; index < a_s; ++index) {
 		char next = 'a' + index;
 		Node const* Child = node.child[index];
 		if (Child) {
@@ -64,13 +69,13 @@ void search (string prefix, string set, Node const& node) {
 void main()
 {
 	Node* Dict = new Node;
-	insert(Dict, "is");
-	insert(Dict, "go");
-	insert(Dict, "it");
 	insert(Dict, "cap");
 	insert(Dict, "car");
-	insert(Dict, "if");
 	insert(Dict, "cdr");
+	insert(Dict, "is");
+	insert(Dict, "it");
+	insert(Dict, "if");
+	insert(Dict, "go");
 	print("", *Dict);
 	string Set = "crda";
 	//cout << "enter the set of numbers\n";
@@ -79,4 +84,3 @@ void main()
 	search("", Set, *Dict);
 	system("pause");
 }
-	

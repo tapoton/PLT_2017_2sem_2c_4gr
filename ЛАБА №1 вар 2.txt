@@ -1,0 +1,121 @@
+#include <iostream>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+#include <cstdio>
+
+using namespace std;
+const int ALPHABET_SIZE = 26;
+const int CASE = 'a';
+struct Node
+{
+	Node* parent = nullptr;
+	Node* children[ALPHABET_SIZE]={};
+	int  occur= 0;
+};
+
+void VstavkaNode(Node* trietree, char * word)
+{
+	 Node* current = trietree;
+	 while (*word != '\0')
+	 {
+	  if (current->children[*word - CASE] == nullptr) 
+	  {
+            current->children[*word - CASE] = new Node();
+            current->children[*word - CASE]->parent = current;  
+        }
+
+        current = current->children[*word - CASE];
+        ++word; 
+    }
+    ++current->occur;
+}
+
+ Node* poisk(Node* trietree, char * word)
+{
+	while (*word != '\0') 
+	{
+		if (trietree->children[*word-CASE] != nullptr)
+	{
+		trietree = trietree->children[*word - CASE];
+		++word;
+		}
+		else return nullptr;
+	}
+	return (trietree->occur != 0)? trietree :nullptr;
+}
+
+void udalenieNode(Node* trietree, char* word)
+{ 
+	Node * current = poisk(trietree, word);
+	 if (current != nullptr)
+	 {
+		    --current->occur;
+	        Node* parent = nullptr;
+			bool notchildren = true;
+			
+			for(int i=0; i< ALPHABET_SIZE; ++i)
+			{
+				if(current->children[i] != nullptr)
+				{
+					notchildren = false;
+				     break;
+				}
+			}
+			while (current->parent != nullptr && notchildren && current->occur == 0)
+			{
+				parent = current->parent;
+				for (int i =0; i <ALPHABET_SIZE; ++i)
+				{
+					if (parent->children[i] == current)
+					{
+						parent->children[i] = nullptr;
+						delete current;
+						current = parent;
+					}
+					else if (parent -> children[i] != nullptr)
+					{
+						notchildren = false;
+						break;
+					}
+				}
+			}
+    }
+}
+void printtree( Node* trietree, vector<char> word)//поиск потомков
+{ 
+	if (trietree->occur > 0)
+	{
+		for(auto it = word.begin(); it != word.end(); ++it)
+		{ 
+			cout<<*it;
+		}
+		cout<<" "<< trietree->occur<<endl;
+	}
+	for (int i =0; i< ALPHABET_SIZE;++i)
+	{
+		if (trietree->children[i] != nullptr)
+		{
+			word.push_back(CASE + i);
+			printtree(trietree->children[i], word);
+			word.pop_back();
+		}
+	}
+}
+int main()
+{  vector<char> words;
+	Node* Tree = new Node;
+VstavkaNode(Tree, "cord");
+VstavkaNode(Tree, "cow");
+VstavkaNode(Tree, "corn");
+VstavkaNode(Tree, "dim");
+VstavkaNode(Tree, "dip");
+VstavkaNode(Tree, "must");
+VstavkaNode(Tree, "must");
+printtree(Tree,words);
+cout<<endl;
+udalenieNode(Tree, "cord");
+printtree(Tree,words);
+		  system("pause");
+		  return 0;
+}
