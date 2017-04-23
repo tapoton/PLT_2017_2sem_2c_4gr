@@ -36,6 +36,38 @@ class hashTable
 		return key % hash_size;
 	}
 
+	Node* search1(int tabel)
+	{
+		int hash_num = hash(tabel);
+		Node* result = new Node;
+		result = worker[hash_num];
+		if (result)
+		{
+
+			while ((result->tabel != tabel) && (result->next != NULL))
+			{
+				result = result->next;
+			}
+			if (result->next == NULL && result->tabel != tabel)
+			{
+				return NULL;
+			}
+			else
+			{
+				return result;
+
+			}
+		}
+		else
+		{
+			return NULL;
+		}
+
+
+	}
+
+
+
 
 public:
 
@@ -49,6 +81,12 @@ public:
 
 	void insertNode(int tabel, int money, string surname, string name, string otch)
 	{
+		Node* pv;
+		pv = search1(tabel);
+		if (pv)
+		{
+			createNode(pv, tabel, money, surname, name, otch);
+		}
 		int hash_num = hash(tabel);
 		if (worker[hash_num]!=NULL) 
 		{
@@ -72,6 +110,7 @@ public:
 
 	void search(int tabel) 
 	{
+		
 		int hash_num = hash(tabel);
 		Node* result = new Node;
 		result = worker[hash_num];
@@ -116,7 +155,7 @@ void main()
 			table.insertNode(12, 20000,"petrov", "petya","petrovich");
 			table.insertNode(13, 24000, "ivanov", "ivan", "petrovich");
 			table.insertNode(23, 20000, "petrov", "ivan", "pavlovich");
-			
+			table.insertNode(12, 20000, "sergeev", "vladimir", "ivanovich");
 			cout << "enter tabel: " << endl;
 			cin >> tabel_num;
 		table.search(tabel_num);
