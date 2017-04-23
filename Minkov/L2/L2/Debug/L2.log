@@ -1,0 +1,18 @@
+﻿  stdafx.cpp
+  L2.cpp
+d:\git\l\minkov\l2\l2\l2.cpp(25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+d:\git\l\minkov\l2\l2\l2.cpp(49): warning C4018: '<': signed/unsigned mismatch
+d:\git\l\minkov\l2\l2\l2.cpp(59): warning C4018: '<': signed/unsigned mismatch
+d:\git\l\minkov\l2\l2\l2.cpp(72): warning C4018: '<': signed/unsigned mismatch
+d:\git\l\minkov\l2\l2\l2.cpp(73): warning C4018: '<': signed/unsigned mismatch
+d:\git\l\minkov\l2\l2\l2.cpp(74): warning C4018: '<': signed/unsigned mismatch
+d:\git\l\minkov\l2\l2\l2.cpp(76): warning C4018: '<': signed/unsigned mismatch
+c:\program files (x86)\visual studio\vc\include\xutility(2229): warning C4996: 'std::_Copy_impl': Function call with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct. To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
+  c:\program files (x86)\visual studio\vc\include\xutility(2216): note: see declaration of 'std::_Copy_impl'
+  d:\git\l\minkov\l2\l2\l2.cpp(37): note: see reference to function template instantiation '_OutIt std::copy<std::_String_iterator<std::_String_val<std::_Simple_types<char>>>,char*>(_InIt,_InIt,_OutIt)' being compiled
+          with
+          [
+              _OutIt=char *,
+              _InIt=std::_String_iterator<std::_String_val<std::_Simple_types<char>>>
+          ]
+  L2.vcxproj -> D:\Git\L\Minkov\L2\Debug\L2.exe
