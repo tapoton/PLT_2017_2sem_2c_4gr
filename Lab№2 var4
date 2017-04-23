@@ -111,31 +111,17 @@ public:
 	void search(int tabel) 
 	{
 		
-		int hash_num = hash(tabel);
 		Node* result = new Node;
-		result = worker[hash_num];
+		result = search1(tabel);
 		if (result)
 		{
-
-			while ((result->tabel != tabel) && (result->next != NULL))
-			{
-				result = result->next;
-			}
-			if (result->next == NULL && result->tabel != tabel)
-			{
-				cout << "error" << endl;
-				return;
-			}
-			else
-			{
 				cout << "\tNumber of tabel: " << result->tabel << endl;
 				cout << result->surname << endl;
 				cout << result->name << endl;
 				cout << result->otch << endl;
 				cout << result->money << endl;
 
-			}
-		}
+	}
 		else
 		{
 			cout << "error"<<endl;
