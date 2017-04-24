@@ -3,7 +3,7 @@
 #include "stdafx.h"
 #include <iostream>
 using namespace std;
-
+int MAX = 1000;
 class DistanceMatrix
 {
 	int n;
@@ -11,7 +11,7 @@ class DistanceMatrix
 public:
 	void PrintMatrix()
 	{
-		cout <<" Distance Matrix: "<<endl ;
+		cout << " Distance Matrix: " << endl;
 		for (int i = 0; i < n; i++)
 		{
 			cout << " ";
@@ -22,7 +22,7 @@ public:
 	}
 	void MinCityDistance()
 	{
-		int min_sum = INT_MAX, city, sum;
+		int min_sum = MAX, city, sum;
 		for (int i = 0; i < n; i++)
 		{
 			sum = 0;
@@ -36,43 +36,37 @@ public:
 		}
 		cout << " City " << city + 1 << " has the minimum sum of distancese = " << min_sum << endl;
 	}
-	void Dijkstra()
+	int P(int x, int y, bool * b, int r = 0) //из x -> y
 	{
-		bool *visited = new bool[n];
-		int* D = new int[n];
-		for (int st = 0; st < n; st++)
+		if (b[x])return MAX;
+		if (x == y)return r;
+		b[x] = 1;
+		int min = MAX;
+		bool *temp = new bool[n];
+		for (int i = 0; i < n; i++)
 		{
-			for (int i = 0; i < n; i++)
-			{
-				D[i] = *(*(a + st) + i);
-				visited[i] = 0;
-			}
-			D[st] = 0;
-			int index = 0, u = 0;
-			for (int i = 0; i < n; i++)
-			{
-				int min = INT_MAX;
-				for (int j = 0; j < n; j++)
-				{
-					if (!visited[j] && D[j] < min)
-					{
-						min = D[j];
-						index = j;
-					}
-				}
-				u = index;
-				visited[u] = 1;
-				for (int j = 0; j < n; j++)
-				{
-					if (!visited[j] && *(*(a + u) + j) != INT_MAX && D[u] != INT_MAX && (D[u] + *(*(a + u) + j) < D[j]))
-					{
-						D[j] = D[u] + *(*(a + u) + j);
-					}
-				}
-			}
+			for (int j = 0; j < n; j++)
+				temp[j] = b[j];
 
-			for (int i = 0; i < n; i++)
-				a[st][i] = a[i][st] = D[i];
+			int k = P(i, y, temp, r + a[i][x]);
+			if (k < min) min = k;
+		}
+		delete temp;
+		return min;
+	}
+	void T()
+	{
+		bool *b = new bool[n];
+		for (int i = 0; i < n; i++)
+		{
+			for (int j = i + 1; j < n; j++)
+				if (a[i][j] == MAX)
+				{
+
+					for (int k = 0; k < n; k++)
+						b[k] = 0;
+					a[j][i] = a[i][j] = P(i, j, b);
+				}
 		}
 	}
 	DistanceMatrix()
@@ -93,7 +87,7 @@ public:
 			{
 				cout << " Enter the distance " << (i + 1) << " - " << (j + 1) << ": ";
 				cin >> distance;
-				if (!distance)a[j][i] = a[i][j] = INT_MAX;
+				if (!distance)a[j][i] = a[i][j] = MAX;
 				else
 					a[j][i] = a[i][j] = distance;
 			}
@@ -110,8 +104,9 @@ public:
 void main()
 {
 	DistanceMatrix d;
-	d.Dijkstra();
+	d.T();
 	d.PrintMatrix();
         d.MinCityDistance();
+
 	system("PAUSE");
 }
