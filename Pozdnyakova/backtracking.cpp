@@ -13,13 +13,11 @@ set<int> initSet (int begin, int end)
 class Graph
 {
 private:
-    
     unsigned int n;
     int ** AdjacencyMatrix;
     bool* visited;
     
 public:
-    
     Graph ()
     {
         cout << "\nEnter the number of graph's nodes: ";
@@ -30,7 +28,6 @@ public:
         for(unsigned int i=0; i<n; i++)
             AdjacencyMatrix[i]= new int[n];
         visited = new bool [n];
-        
     }
     
     void Adjacency ()
