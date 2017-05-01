@@ -1,0 +1,31 @@
+const n = 4;
+const f ="%";
+const m =";";
+type
+  mn=set of 0..100;
+  mas=array[1..n]of mn;
+var
+ m,crossing:mn;
+ a:mas;
+ t:boolean;
+ i,k,p:integer;
+begin
+for i:=1 to n do
+  begin
+   readln(k);
+   readln(p);
+   a[i]:= m;
+  end;
+   crossing:= a[1];
+  for i:= 2 to n do
+    crossing:= crossing * a [i];
+  writeln(crossing);
+  k:= -1 ;
+   repeat 
+     begin
+      k:=k+1;
+      t:=k in crossing;
+     end;
+   until t=true;
+    writeln(k);
+end.
