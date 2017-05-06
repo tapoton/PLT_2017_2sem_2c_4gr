@@ -5,34 +5,40 @@ using namespace std;
 
 class Hash
 {
-	struct item
+	struct Node
 	{
 		string word;
-		int linkedItemsCount;
-		item *next;
+		int count;
+		Node *next;
 	};
+	Node **head;
+	static const int tableSize = 26;
 
-	static const int tableSize = 20;
-
-	item *hashTable[tableSize];
-	item *head = new item; // для списка из слов
 public:
 	
 	Hash()
 	{
+		head = new Node *[tableSize];
 		for (int i = 0; i < tableSize; i++)
-		{
-			hashTable[i] = new item;
-			hashTable[i]->linkedItemsCount = 0;
-			hashTable[i]->word = "";
-			hashTable[i]->next = NULL;
-		}
-		head->word = "";
-		head->linkedItemsCount = -1;
-		head->next = NULL;
+			head[i] = NULL;
+	}
+	~Hash()
+	{
+		for(int i=0; i<tableSize; i++)
+			if (head[i])
+			{
+				Node *temp;
+				while (head[i])
+				{
+					temp = head[i];
+					head[i] = head[i]->next;
+					temp = NULL;
+					delete temp;
+				}
+			}
 	}
 
-	int hashIndex(string word)
+	int Index(string word)
 	{
 		int index = 0;
 		
@@ -45,113 +51,92 @@ public:
 		return index;
 	}
 	
-	void addElement(string word)
+	Node *Search(string word)
 	{
-		int index = hashIndex(word);
-
-		if (hashTable[index]->word == "")
-			hashTable[index]->word = word;
-		else
-		{
-			hashTable[index]->linkedItemsCount += 1;
-			item *ptr = hashTable[index];
-			while (ptr->next != NULL)
-				ptr = ptr->next;
-			
-			item *addedElement = new item;
-			addedElement->word = word;
-			addedElement->next = NULL;
-			addedElement->linkedItemsCount = -1;
-
-			ptr->next = addedElement;
-		}
+		int index = Index(word);
+		Node *temp = head[index];
+		while (temp && temp->word != word)
+			temp = temp->next;
+		return temp;
 	}
 
-	void newList() // проверка повторяющихся более 1 раза слов
+	void InsertElement(string word)
 	{
-		for (int i = 0; i < tableSize; i++)
+		if (word != "\0")
 		{
-			if (hashTable[i]->linkedItemsCount > 0)
-			{
-				item *el = new item;
-				el->word = hashTable[i]->word;
-				el->linkedItemsCount = -1;
-				el->next = NULL;
+			Node *foundWord = Search(word);
+			int index = Index(word);
 
-				if (head->word == "")
-				{
-					head = el;
-				}
-				else
-				{
-					item *ptr = head;
-					while (ptr->next != NULL)
-						ptr = ptr->next;
-					ptr->next = el;
-				}
+			if (!foundWord)
+			{
+				Node *curr = new Node;
+				curr->word = word;
+				curr->count = 1;
+				head[index] = curr;
+			}
+			else
+			{
+				foundWord->count++;
 			}
 		}
 	}
 
-	void listOutput()
+	void Show()
 	{
-		item *ptr = head;
-		while (ptr->next != NULL)
-		{
-			cout << ptr->word << " ";
-			ptr = ptr->next;
-		}
-	}
+		cout << "Result is: \n";
+		int sum = 0;
 
-	void hashOutput()
-	{
-		for (int i = 0; i < tableSize; i++)
-		{
-			item *ptr = hashTable[i];
-			cout << ptr->word << " ";
-			while (ptr->next != NULL)
+		for(int i=0; i<tableSize; i++)
+			if (head[i])
 			{
-				ptr = ptr->next;
-				cout << ptr->word << " ";
+				Node *temp;
+				while (head[i])
+				{
+					temp = head[i];
+					if (temp->count > 5)
+						cout << temp->word << endl;
+					head[i] = head[i]->next;
+				}
 			}
-			cout << endl;
-		}
+		delete[] head;
 	}
 
 };
 
 int main()
 {
-	static const int charCount = 2048;
-	
-	char text[charCount];
-	
-	ifstream fin;
-	fin.open("inputText.txt");
-	
+	ifstream fin("inputText.txt");
+	char signs[] = " .,\/*+-=()[]{}:;<>!?";
+	int const n = 20;
+	char word[n] = "";
+	int m = sizeof(signs) - 1;
 	Hash hashObj;
-	
-	
-	//fin >> text;
-	cin.getline(text, charCount);
-	char c = text[0]; string word = "";
-	int i = 0;
 
-	while (c != '\0')
+	if (!fin)
 	{
-		c = text[i];
-		while ((text[i] != ' ') && ((int)text[i] != -52) && (text[i] != '\0') && (text[i] != '\n')) // часто концом строки почему-то является символ М с кодом -52
-		{
-			word += text[i];
-			i++;
-		}
-		i++;
-		hashObj.addElement(word);
-		word = "";
+		cout << "Error opening file.\n";
+		return 0;
 	}
-	hashObj.hashOutput();
-	hashObj.newList();
-	hashObj.listOutput();
+	char c;
+	int i = 0;
+	
+	string file;
+	getline(fin, file);
+	int l = file.length(); int j = 0;
+	for (int i = 0; i < l; i++)
+	{
+		word[j] = file[i];
+		for(int k=0; k<m; k++)
+			if (word[j] == signs[k])
+			{
+				word[j] = '\0';
+				j = -1;
+				hashObj.InsertElement(word);
+			}
+		j++;
+	}
+
+	hashObj.Show();
 
 	fin.close();
 
