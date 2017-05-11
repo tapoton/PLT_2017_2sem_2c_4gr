@@ -24,7 +24,7 @@ class derevko
 		{
 			cout << "\t";
 		}
-		cout << tmp->key << endl;
+		cout << tmp->key << ' ' << tmp->isend << endl;
 		for (int i = 0; i < alphabet; i++)
 		{
 			show(tmp->child[i], level + 1);
@@ -113,17 +113,34 @@ public:
 		{
 			return 0;
 		}
-		else if (pv->isend)
+		else if (pv->isend && !proverkanadetey(pv))
 		{
 			return 1;
 		}
 		else {
+			if (pv->isend)
+			{
+				klv++;
+			}
 			for (int i = 0; i < alphabet; i++)
 			{
 				klv = klv + podchet(pv->child[i], 0);
 			}
 			return klv;
 		}
+	}
+	bool proverkanadetey(Node* pv)
+	{
+		bool ft = false;
+		int i = 0;
+		while (!ft&&i < alphabet)
+		{
+			if (pv->child[i] != NULL)
+				ft = true;
+			i++;
+		}
+		cout << ft;
+		return ft;
 	}
 	void show()
 	{
