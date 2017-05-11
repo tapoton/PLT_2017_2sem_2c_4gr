@@ -1,4 +1,5 @@
 #include<iostream>
+#include<fstream>
 using namespace std;
  class Queue {
  public:
@@ -119,8 +120,11 @@ using namespace std;
  	     int n, m; 
  	     int** graph; 
  	     bool* visited; 
+		 ifstream f ("данные.txt");
+		 if(!f.is_open()) cout<<endl<<"file is not found"<<endl;
+		 else{
+		 f>>n>>m;
 		
-		 cin>>n>>m;
 		  int* Labirint_2=new int[m*n];
 		 labirint = new int*[n];
         for (int i=0;i<n;i++)
@@ -138,7 +142,7 @@ using namespace std;
  		}
 		for (int i = 0; i < n; i++) {
  			for (int j = 0; j < m; j++) {
- 				cin >> labirint[i][j];
+ 				f >> labirint[i][j];
  			}
  		}
 		
@@ -155,7 +159,7 @@ using namespace std;
 		}
 		
 
-		cout<<endl<<"minimalnoe kol-vo naklonov : "<<search(Labirint_2,graph,visited,n,m)<<" ";
+		cout<<endl<<"minimalnoe kol-vo naklonov : "<<search(Labirint_2,graph,visited,n,m)<<" ";}
 
 		system("pause");
 	}
