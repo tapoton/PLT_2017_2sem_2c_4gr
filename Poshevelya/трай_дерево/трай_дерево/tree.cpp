@@ -139,7 +139,6 @@ public:
 				ft = true;
 			i++;
 		}
-		cout << ft;
 		return ft;
 	}
 	void show()
