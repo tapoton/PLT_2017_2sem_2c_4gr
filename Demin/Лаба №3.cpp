@@ -37,7 +37,7 @@ public:
 	}
 	void Print()
 	{
-		cout << "Список";
+		cout << "РЎРїРёСЃРѕРє";
 		Node<T>* ptr = head;
 		if (ptr)
 		{
@@ -49,7 +49,7 @@ public:
 			}
 			cout << ptr->info;
 		}
-		else cout << " пуст";
+		else cout << " РїСѓСЃС‚";
 	}
 };
 template <class T>
@@ -101,14 +101,14 @@ public:
 		for (int i = 0; i < n; i++)
 		{
 			Matr[i] = new bool[n];
-			cout << "Введите название вершины №" << i + 1 << ": ";
+			cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г Г§ГўГ Г­ГЁГҐ ГўГҐГ°ГёГЁГ­Г» В№" << i + 1 << ": ";
 			cin >> Points[i].Name;
 			int j = 0;
 			while (j < i)
 			{
 				if (Points[j].Name == Points[i].Name)
 				{
-					cout << "Вершина с таким именем уже существует, повторите ввод названия вершины №" << i + 1 << ": ";
+					cout << "Г‚ГҐГ°ГёГЁГ­Г  Г± ГІГ ГЄГЁГ¬ ГЁГ¬ГҐГ­ГҐГ¬ ГіГ¦ГҐ Г±ГіГ№ГҐГ±ГІГўГіГҐГІ, ГЇГ®ГўГІГ®Г°ГЁГІГҐ ГўГўГ®Г¤ Г­Г Г§ГўГ Г­ГЁГї ГўГҐГ°ГёГЁГ­Г» В№" << i + 1 << ": ";
 					cin >> Points[i].Name;
 					j = -1;
 				}
@@ -116,13 +116,13 @@ public:
 			}
 		}
 		Num_Of_Points = n;
-		cout << "Выберите тип графа:\n   1) Неориентированный граф\n   2) Ориентированный граф\nОтвет: ";
+		cout << "Г‚Г»ГЎГҐГ°ГЁГІГҐ ГІГЁГЇ ГЈГ°Г ГґГ :\n   1) ГЌГҐГ®Г°ГЁГҐГ­ГІГЁГ°Г®ГўГ Г­Г­Г»Г© ГЈГ°Г Гґ\n   2) ГЋГ°ГЁГҐГ­ГІГЁГ°Г®ГўГ Г­Г­Г»Г© ГЈГ°Г Гґ\nГЋГІГўГҐГІ: ";
 		string answer; cin >> answer;
 		bool Or = answer == "2" || answer == "2." || answer == "2)";
 		bool Unor = answer == "1" || answer == "1." || answer == "1)";
 		while (!(Or || Unor))
 		{
-			cout << "Повторите ответ: "; cin >> answer;
+			cout << "ГЏГ®ГўГІГ®Г°ГЁГІГҐ Г®ГІГўГҐГІ: "; cin >> answer;
 			Or = answer == "2" || answer == "2." || answer == "2)";
 			Unor = answer == "1" || answer == "1." || answer == "1)";
 		}
@@ -136,15 +136,15 @@ public:
 						Matr[i][i] = 1;
 					else
 					{
-						cout << "Существует дуга между вершинами " << Points[i].Name << " и " << Points[j].Name << "? ";
+						cout << "Г‘ГіГ№ГҐГ±ГІГўГіГҐГІ Г¤ГіГЈГ  Г¬ГҐГ¦Г¤Гі ГўГҐГ°ГёГЁГ­Г Г¬ГЁ " << Points[i].Name << " ГЁ " << Points[j].Name << "? ";
 						cin >> answer;
-						bool Yes = answer == "Yes" || answer == "yes" || answer == "1" || answer == "Да" || answer == "да";
-						bool No = answer == "No" || answer == "no" || answer == "0" || answer == "Нет" || answer == "нет";
+						bool Yes = answer == "Yes" || answer == "yes" || answer == "1" || answer == "Г„Г " || answer == "Г¤Г ";
+						bool No = answer == "No" || answer == "no" || answer == "0" || answer == "ГЌГҐГІ" || answer == "Г­ГҐГІ";
 						while (!(Yes || No))
 						{
-							cout << "Повторите ответ: "; cin >> answer;
-							Yes = answer == "Yes" || answer == "yes" || answer == "1" || answer == "Да" || answer == "да";
-							No = answer == "No" || answer == "no" || answer == "0" || answer == "Нет" || answer == "нет";
+							cout << "ГЏГ®ГўГІГ®Г°ГЁГІГҐ Г®ГІГўГҐГІ: "; cin >> answer;
+							Yes = answer == "Yes" || answer == "yes" || answer == "1" || answer == "Г„Г " || answer == "Г¤Г ";
+							No = answer == "No" || answer == "no" || answer == "0" || answer == "ГЌГҐГІ" || answer == "Г­ГҐГІ";
 						}
 						if (Yes)
 						{
@@ -163,15 +163,15 @@ public:
 				Matr[i][i] = 1;
 				for (int j = i + 1; j < Num_Of_Points; j++)
 				{
-					cout << "Существует ребро " << Points[i].Name << " <---> " << Points[j].Name << " (" << Points[j].Name << " <---> " << Points[i].Name << ")? ";
+					cout << "Г‘ГіГ№ГҐГ±ГІГўГіГҐГІ Г°ГҐГЎГ°Г® " << Points[i].Name << " <---> " << Points[j].Name << " (" << Points[j].Name << " <---> " << Points[i].Name << ")? ";
 					cin >> answer;
-					bool Yes = answer == "Yes" || answer == "yes" || answer == "1" || answer == "Да" || answer == "да";
-					bool No = answer == "No" || answer == "no" || answer == "0" || answer == "Нет" || answer == "нет";
+					bool Yes = answer == "Yes" || answer == "yes" || answer == "1" || answer == "Г„Г " || answer == "Г¤Г ";
+					bool No = answer == "No" || answer == "no" || answer == "0" || answer == "ГЌГҐГІ" || answer == "Г­ГҐГІ";
 					while (!(Yes || No))
 					{
-						cout << "Повторите ответ: "; cin >> answer;
-						Yes = answer == "Yes" || answer == "yes" || answer == "1" || answer == "Да" || answer == "да";
-						No = answer == "No" || answer == "no" || answer == "0" || answer == "Нет" || answer == "нет";
+						cout << "ГЏГ®ГўГІГ®Г°ГЁГІГҐ Г®ГІГўГҐГІ: "; cin >> answer;
+						Yes = answer == "Yes" || answer == "yes" || answer == "1" || answer == "Г„Г " || answer == "Г¤Г ";
+						No = answer == "No" || answer == "no" || answer == "0" || answer == "ГЌГҐГІ" || answer == "Г­ГҐГІ";
 					}
 					Matr[i][j] = Matr[j][i] = (Yes) ? 1 : 0;
 				}
@@ -306,7 +306,7 @@ public:
 		}
 		else
 		{
-			cout << "Этот граф нельзя начертить не отрывая карандаша от бумаги...\n";
+			cout << "ГќГІГ®ГІ ГЈГ°Г Гґ Г­ГҐГ«ГјГ§Гї Г­Г Г·ГҐГ°ГІГЁГІГј Г­ГҐ Г®ГІГ°Г»ГўГ Гї ГЄГ Г°Г Г­Г¤Г ГёГ  Г®ГІ ГЎГіГ¬Г ГЈГЁ...\n";
 			return L;
 		}
 	}
@@ -339,13 +339,13 @@ void main()
 	SetConsoleOutputCP(1251);
 	Graph MyGraph;
 	int n;
-	cout << "Введите кол-во вершин графа: "; cin >> n;
+	cout << "Г‚ГўГҐГ¤ГЁГІГҐ ГЄГ®Г«-ГўГ® ГўГҐГ°ГёГЁГ­ ГЈГ°Г ГґГ : "; cin >> n;
 	while (n>0)
 	{
 		MyGraph.Initial(n);
 		MyGraph.FindEulerPath().Print();
 		cout << endl;
 		system("pause");
-		cout << endl << "Введите кол-во вершин графа: "; cin >> n;
+		cout << endl << "Г‚ГўГҐГ¤ГЁГІГҐ ГЄГ®Г«-ГўГ® ГўГҐГ°ГёГЁГ­ ГЈГ°Г ГґГ : "; cin >> n;
 	}
 }
