@@ -65,6 +65,7 @@ public:
 				p = p->next;
 			Node* child = new Node;
 			createNode(child, key,producer, actors, content );
+			p->next=child;
 		}
 		else 
 		{
@@ -113,6 +114,7 @@ int  main()
     Htable.insertFilm("Rogue one", "Gareth Edwards", "Felicity Jones,Diego Luna,Alan Tudyk", "fantasy");
 	Htable.insertFilm("Personal shopper", "Olivier Assays", "Kristen Stewart,Lars Eidinger", "drama");
 	Htable.insertFilm("Jackie", "Pablo Larrian", "Natalie Portman,John Hurt", "history");
+	Htable.insertFilm("Jacike", " Larrian", " Portman, Hurt", "history");
 	Htable.insertFilm("Miss Sloane", "John Madden", "John Lithgow, Mark Strong", "triller");
 	Htable.insertFilm("Hidden Figures", "Theodore Melfi", "Taraji P. Henson,Octavia Spencer", "drama");
     Htable.insertFilm("Moonlight ", "Barry Jenkins", "Ashton Sanders,Naomie Harris", "drama");
@@ -121,5 +123,6 @@ int  main()
 	Htable.searchFilm("Rogue one");
 	Htable.searchFilm("Miss Sloane");
 	Htable.searchFilm("Jackie"); 
+	Htable.searchFilm("Jacike");
 	return 0;
 }
