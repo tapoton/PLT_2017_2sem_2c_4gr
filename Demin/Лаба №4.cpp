@@ -37,7 +37,7 @@ public:
 	}
 	void Print()
 	{
-		cout << "Ñïèñîê";
+		cout << "Ð¡Ð¿Ð¸ÑÐ¾Ðº";
 		if (Head)
 		{
 			Node* ptr = Head;
@@ -49,7 +49,7 @@ public:
 			}
 			cout << ptr->Point;
 		}
-		else cout << " ïóñò...";
+		else cout << " Ð¿ÑƒÑÑ‚...";
 		cout << endl;
 	}
 	Node* GetHead()
@@ -213,7 +213,7 @@ public:
 			}
 			File.close();
 		}
-		else cout << "Íå óäàëîñü îòêðûòü ôàéë.../n";
+		else cout << "ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ Ñ„Ð°Ð¹Ð».../n";
 	}
 	void PrintMatr()
 	{
@@ -247,7 +247,7 @@ public:
 		for (int i = 0; i < Num_Of_Points; i++)
 			Max += Matr[i][Num_Of_Points - 1].CurrentStream;
 		ofstream File(FileName);
-		File << "Ìàêñèìàëüíûé ïîòîê â ãðàôå = " << Max;
+		File << "ÐœÐ°ÐºÑÐ¸Ð¼Ð°Ð»ÑŒÐ½Ñ‹Ð¹ Ð¿Ð¾Ñ‚Ð¾Ðº Ð³Ñ€Ð°Ñ„Ð° = " << Max;
 		File.close();
 	}
 };
@@ -257,7 +257,7 @@ void main()
 	setlocale(LC_ALL, "rus");
 	Graph G;
 	string FileName, ResultFileName;
-	cout << "Ââåäèòå èìÿ ôàéëà: "; cin >> FileName;
+	cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð½Ð°Ð·Ð²Ð°Ð½Ð¸Ðµ Ñ„Ð°Ð¹Ð»Ð°: "; cin >> FileName;
 	int n = FileName.length() - 4;
 	ResultFileName = FileName.substr(0, n) + "-Result.txt";
 	G.Initial(FileName);
