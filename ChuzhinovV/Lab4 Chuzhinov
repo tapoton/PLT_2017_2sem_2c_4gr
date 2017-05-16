@@ -1,0 +1,77 @@
+#include "stdafx.h"
+#include <queue>
+#include <iostream>
+using namespace std;
+
+queue <int> q;
+int dx[] = { -2, -2, -1, -1, 1, 1, 2, 2 };
+int dy[] = { -1, 1, -2, 2, -2, 2, -1, 1 };
+int d[8][8];
+
+void p(int x1 ,int y1,int x2, int y2 )
+{
+	d[y1][x1] = 0;
+	q.push(x1); 
+	q.push(y1); 	
+
+	while (!q.empty())
+	{
+		int ux = q.front(); q.pop();
+		int uy = q.front(); q.pop();
+		for (int i = 0; i < 8; i++)
+		{
+
+			int vx = ux + dx[i];
+			int vy = uy + dy[i];
+			if (vx >= 0 && vx < 8 && vy >= 0 &&
+				vy < 8 && d[vy][vx] == -1)
+			{
+				d[vy][vx] = d[uy][ux] + 1;
+				q.push(vx); 
+				q.push (vy); 
+			}
+		}
+	}
+
+	if (d[y2][x2] % 2) cout << "-1";
+	else cout << d[y2][x2] / 2;
+}
+
+void main()
+{
+	int  x1, y1, x2, y2;
+	char s1, s2;
+	do
+	{
+		cout << " Insert 1-8 for red horse : ";
+		cin >> x1;
+		cout << endl << " Insert a-h : ";
+		cin >> s1;
+
+	} while (x1 < 1 || x1 > 8 || s1 < 'a' || s1 > 'h');
+	do
+	{
+		cout << " Insert 1-8 for green horse : ";
+		cin >> x2;
+		cout << endl << " Insert a-h : ";
+		cin >> s2;
+
+	} while (x2 < 1 || x2 > 8 || s2 < 'a' || s2 > 'h');
+	x1--;
+	x2--;
+	y1 = s1 - 'a';
+	y2 = s2 - 'a';
+
+
+
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			d[i][j] = -1;
+
+	
+	p(x1, y1,x2,y2);
+
+	cout << endl;
+	system("PAUSE");
+}
+
