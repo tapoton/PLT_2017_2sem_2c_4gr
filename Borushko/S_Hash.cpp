@@ -3,24 +3,26 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cctype>
 
 using namespace std;
 
 //Размер хеш-таблицы по умолчанию
 const int hashSize = 53;
 
+template<typename value>
 //Структура узел описана глобально для удобства возвращения элемента в хеш-таблице
 struct Node
 {
-	string val;
-	int key;
+	value val;
+	int repeats;
 	Node* Next;
-	Node* Prev;
 	Node()
 	{
-		Next = Prev = nullptr;
+		Next = nullptr;
+		repeats = 0;
 	}
-	Node* getByValue(string val)
+	Node* getByValue(value val)
 	{
 		Node* temp = this;
 		while (temp != nullptr && temp->val != val)
@@ -29,103 +31,83 @@ struct Node
 	}
 	~Node()
 	{
-		Next = Prev = nullptr;
+		Next = nullptr;
 	}
 };
 
-#ifdef _IOSTREAM_ //Если подключён iostream
-//Переопределить оператор cout для связного списка в виде указателя на начальный узел. Const 2 раза - для безопасности, чтобы не менять объект.
-ostream& operator<<(ostream& os, const Node* const temp)
-{
-	const Node* ptr = temp;
-	while (ptr != nullptr)
-	{
-		os << ptr->val << endl;
-		ptr = ptr->Next;
-	}
-	return os;
-}
-#endif
-
+template<typename value>
 //В качестве ключа используется количество повторений элемента в таблице
 class HashTable
 {
 private:
 	unsigned int hSize;
-	Node** Table;
-	//Поиск во всей таблице узла со значением val. Если узел не найден, то возвращается nullptr
-	Node* find(string val)
+	Node<value>** Table;
+	int hash(value key)
 	{
-		Node* temp = nullptr;
-		for (unsigned int i = 0; i < hSize && temp == nullptr; i++)
-			if (Table[i] != nullptr)
-				temp = Table[i]->getByValue(val);
-		return temp;
+		int s = 0;
+		string ss = (string)key;
+		for (int i = 0; i < ss.length(); i++)
+			s += ss[i];
+		return s % hSize;
+	}
+	//Поиск во всей таблице узла со значением val. Если узел не найден, то возвращается nullptr
+	Node<value>* find(string key)
+	{
+		Node<value>* temp = Table[hash(key)]->getByValue(key);
+		return Table[hash(key)]->getByValue(key);
 	}
 public:
 	HashTable(const int size = hashSize)
 	{
-		Table = new Node*[size];
+		Table = new Node<value>*[size];
 		hSize = size;
 		for (int i = 0; i < hSize; i++)
 			Table[i] = nullptr;
 	}
-	void add(string val)
+	void add(value val)
 	{
-		Node* temp = find(val);
-		int key = 0;
-		if (temp != nullptr)
+		Node<value>* temp = find(val);
+		if (temp == nullptr)
 		{
-			key = temp->key;
-			if (temp->Next != nullptr)
-				(temp->Next)->Prev = temp->Prev;
-			if (temp->Prev != nullptr)
-				(temp->Prev)->Next = temp->Next;
-			if (Table[key - 1] == temp)
-				Table[key - 1] = temp->Next;
-			temp->Next = temp->Prev = nullptr;
-		}
-		else
-		{
-			temp = new Node;
+			temp = new Node<value>;
 			temp->val = val;
+			int index = hash(val);
+			temp->Next = Table[index];
+			Table[index] = temp;
 		}
-		if (Table[key] != nullptr)
-		{
-			temp->Next = Table[key];
-			Table[key]->Prev = temp;
-		}
-		Table[key] = temp;
-		temp->key = key + 1;
+		temp->repeats++;
 	}
 	//Возвращается указатель на начало списка, который обязательно будет состоять из узлов с одним ключом, но с разными значениями. Если список пуст, возвращается nullptr
-	Node* const operator[](int key)
+	Node<value>* const operator[](value word)
 	{
-		if (key > hSize || key < 1)
-			throw "Error:Out of range.\n";
-		return Table[key - 1];
+		return Table[hash(word)]->getByValue(word);
+	}
+	Node<value>* const operator[](int index)
+	{
+		return Table[index];
 	}
 };
 
+template<typename value>
 //Класс связного списка, работающий с уже существующими узлами
 class LinkedList
 {
-	Node* begin;
+	Node<value>* begin;
 public:
 	LinkedList()
 	{
 		begin = nullptr;
 	}
-	LinkedList(Node* init)
+	LinkedList(Node<value>* init)
 	{
 		begin = init;
 	}
-	void add(Node* begin_ptr)
+	void add(Node<value>* begin_ptr)
 	{
-		Node* tmp = begin_ptr;
+		Node<value>* tmp = begin_ptr;
 		while (tmp != nullptr)
 		{
-			Node* temp = new Node;
+			Node<value>* temp = new Node<value>;
 			temp->val = tmp->val;
 			temp->Next = begin;
 			begin = temp;
@@ -136,7 +118,7 @@ public:
 	template <typename T>
 	void work(T func)
 	{
-		Node* temp = begin, *temp1 = nullptr;
+		Node<value>* temp = begin, *temp1 = nullptr;
 		if (temp != nullptr)
 			while (temp->Next != nullptr)
 			{
@@ -154,42 +136,37 @@ public:
 	{
 		while (begin != nullptr)
 		{
-			Node* garb = begin;
+			Node<value>* garb = begin;
 			begin = begin->Next;
 			delete garb;
 		}
 	}
 };
 
+typedef string val_type;
+
 int main()
 {
 	int choice;
-	HashTable T;
+	HashTable<val_type> T;
 	do
 	{
 		try
 		{
-			cout << "1: add words to the table"
-				 << "\n2: see table insides\n3: process\n0: end\n";
+			cout  << "\n2: see table insides\n3: process\n0: end\n";
 			cin >> choice;
 			switch (choice)
 			{
-			case 1:
-			{
-				string val;
-				cout << "Enter string: ";
-				cin >> val;
-				T.add(val);
-				break;
-			}
 			case 2:
 			{
-				for (int i = 1; i <= hashSize; i++)
+				for (int i = 0; i < hashSize; i++)
 				{
-					if (T[i] != nullptr)
-						cout << "Elements with key " << i << ":\n" << T[i];
-					else
-						cout << "No elements with key " << i << endl;
+					Node<val_type>* temp = T[i];
+					while (temp != nullptr)
+					{
+						cout << (temp->val) << ": " << temp->repeats << " repeat(s).\n";
+						temp = temp->Next;
+					}
 				}
 				break;
 			}
@@ -204,15 +181,27 @@ int main()
 					throw "ERROR. File not found.\n";
 				while (!file.eof())
 				{
-					string word;
+					val_type word;
 					getline(file, word, ' ');
+					if (ispunct(word[word.length() - 1]))
+						word.erase(word.length() - 1, 1);
+					if (ispunct(word[0]))
+						word.erase(0, 1);
 					T.add(word);
 				}
 				file.close();
-				LinkedList L;
-				for (int i = 2; i <= hashSize; i++)
-					L.add(T[i]);
-				L.work([](Node* temp1, Node* temp)
+				LinkedList<val_type> L;
+				for (int i = 0; i < hashSize; i++)
+				{
+					Node<val_type>* temp = T[i];
+					while (temp != nullptr)
+					{
+						if (temp->repeats > 1)
+							L.add(T[i]);
+						temp = temp->Next;
+					}
+				}
+				L.work([](Node<val_type>* temp1, Node<val_type>* temp)
 				{
 					cout << (temp1->val) << ' ' << (temp->val) << endl;
 				});
