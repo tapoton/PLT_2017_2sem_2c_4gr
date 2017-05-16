@@ -1,0 +1,19 @@
+Вход:
+apple bread candy donut egg fennel grape hen ice jam apple bread candy donut
+
+Анализ:
+apple bread candy donut
+
+Результат(без повторений):
+apple bread candy donut
+apple bread candy
+apple bread donut
+apple bread
+apple candy
+apple donut
+
+bread candy donat
+bread candy
+bread donut
+
+candy donut
