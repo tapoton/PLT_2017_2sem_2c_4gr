@@ -1,5 +1,4 @@
-//If there is problems with coding, then reload file in windows 1251 coding.
-//«адан список имен людей.ќпределить частоту использовани€ каждого имени в некотором тексте.
+//Find the frequency of each word in some text file.
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -14,12 +13,12 @@ template <typename value>
 struct Node
 {
 	value val;
-	ui key;
+	ui repeats;
 	Node* Next;
-	Node* Prev;
 	Node()
 	{
-		Next = Prev = nullptr;
+		Next = nullptr;
+		repeats = 0;
 	}
 	Node* get_by_val(value val)
 	{
@@ -34,88 +33,61 @@ struct Node
 	}
 };
 
-#ifdef _IOSTREAM_ //if iostream included
-//Overload cout for the list of Nodes where temp is the pointer on the begining of the list.
-template <typename value>
-ostream& operator<<(ostream& os, const Node<value>* const temp)
-{
-	const Node<value>* ptr = temp;
-	while (ptr != nullptr)
-	{
-		os << ptr->val << endl;
-		ptr = ptr->Next;
-	}
-	return os;
-}
-#endif
-
-
 //default size of Hash_Table
 const ui default_size = 53;
 
 template <typename value>
 class HashTable
 {
-private:
 	ui Table_size;
 	Node<value>** Table;
-	//Search in the table element with value val, if not found, return nullptr.
-	Node<value>* find(value val)
-	{
-		Node<value>* temp = nullptr;
-		for (ui i = 0; i < Table_size && temp == nullptr; i++)
-			if (Table[i] != nullptr)
-				temp = Table[i]->get_by_val(val);
-		return temp;
-	}
+	ui (*map)(value key);
 public:
-	HashTable(const ui size = default_size)
+	HashTable(ui (*hash_func)(value ), const ui size = default_size)
 	{
+		map = hash_func;
 		Table = new Node<value>*[size];
 		Table_size = size;
-		for (ui i = 0; i < Table_size; i++)
+		for (ui i = 0; i < size; i++)
 			Table[i] = nullptr;
 	}
 	void add(value val)
 	{
-		Node<value>* temp = find(val);
-		ui key = 0;
-		if (temp != nullptr)
-		{
-			key = temp->key;
-			if (temp->Next != nullptr)
-				(temp->Next)->Prev = temp->Prev;
-			if (temp->Prev != nullptr)
-				(temp->Prev)->Next = temp->Next;
-			if (Table[key - 1] == temp)
-				Table[key - 1] = temp->Next;
-			temp->Next = temp->Prev = nullptr;
-		}
-		else
+		ui index = (*map)(val) % Table_size;
+		Node<value>* temp = Table[index]->get_by_val(val);
+		if (temp == nullptr)
 		{
 			temp = new Node<value>;
 			temp->val = val;
+			temp->Next = Table[index];
+			Table[index] = temp;
 		}
-		if (Table[key] != nullptr)
-		{
-			temp->Next = Table[key];
-			Table[key]->Prev = temp;
-		}
-		Table[key] = temp;
-		temp->key = key + 1;
+		temp->repeats++;
 	}
-	Node<value>* const operator[](ui key)
+	Node<value>* const operator[](value word)
 	{
-		if (key > Table_size || key < 1)
-			throw "Error:Out of range.\n";
-		return Table[key - 1];
+		return Table[((*map)(key) % Table_size)]->get_by_val(key);
+	}
+	inline Node<value>* const operator[](ui index)
+	{
+		return Table[index];
+	}
+	inline ui get_size()
+	{
+		return Table_size;
 	}
 };
 
 int main()
 {
 	int choice;
-	HashTable<string> T;
+	HashTable<string> T([](string word)->ui
+	{
+		ui sum = 0;
+		for (ui i = 0; i < word.length(); i++)
+			sum += word[i];
+		return sum;
+	});
 	do
 	{
 		try
@@ -135,12 +107,14 @@ int main()
 			}
 			case 2:
 			{
-				for (ui i = 1; i <= default_size; i++)
+				for (ui i = 0; i < T.get_size(); i++)
 				{
-					if (T[i] != nullptr)
-						cout << "Elements with key " << i << ":\n" << T[i];
-					else
-						cout << "No elements with key " << i << endl;
+					Node<string>* temp = T[i];
+					while (temp != nullptr)
+					{
+						cout <<"Word " << (temp->val) << " has " << temp->repeats << " repeats.\n";
+						temp = temp->Next;
+					}
 				}
 				break;
 			}
@@ -152,25 +126,35 @@ int main()
 				cin >> directory;
 				file.open(directory);
 				if (!file.is_open())
-					throw "ERROR. File not found.\n";
+					throw "Error:File could not be opened.\n";
 				ui words = 0;
 				while (!file.eof())
 				{
 					string word;
 					getline(file, word, ' ');
+					ui eow = (word.length() - 1);
+					if (word[eow] == ',' || word[eow] == '.' || word[eow] == '!' || word[eow] == '?' || word[eow] == '\n' || word[eow] == ' ')
+						word.erase(eow, 1);
+					if (word[0] == ',' || word[0] == '.' || word[0] == '!' || word[0] == '?' || word[0] == '\n' || word[0] == ' ')
+						word.erase(0, 1);
 					T.add(word);
 					++words;
 				}
 				file.close();
-				for (ui i = 1; i <= default_size; i++)
+				for (ui i = 0; i < T.get_size(); i++)
 				{
-					if (T[i] != nullptr)
-						cout << "Elements with frequency " << (((double)(i) / words) * 100) << ":\n" << T[i];
+					Node<string>* temp = T[i];
+					while (temp != nullptr)
+					{
+						cout << "Word " << (temp->val) << " has frequency " << (((double)(temp->repeats) / words) * 100) << " %.\n";
+						temp = temp->Next;
+					}
 				}
 				break;
+
 			}
 			case 0:return 0;
-			default:cout << "ERROR. Try again\n"; break;
+			default:cout << "Error:Try again\n"; break;
 			}
 		}
 		catch (char* err)
