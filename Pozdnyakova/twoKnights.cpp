@@ -29,10 +29,10 @@ public:
     {
         cout << endl << "  ";
         for (unsigned int i=0; i<N; i++)
-            cout << setw(2) << i+1 << " ";
+            cout << setw(2) << char(97+i) << " ";
         for (unsigned int i=0; i<N; i++)
         {
-            cout << endl << char(97+i) << " ";
+            cout << endl << i+1 << " ";
             for (unsigned int j=0; j<N; j++)
                 cout << setw(2) << graph[i][j] << " ";
         }
