@@ -1,0 +1,227 @@
+#include"stdafx.h"
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+const int alphabet = 26;
+
+
+class derevo
+{
+	struct Node
+	{
+		char key;
+		bool isend;
+		Node* child[alphabet];
+	};
+	void zapolnenie(Node*&heads, string str)
+	{
+		if (heads == NULL)
+		{
+			creattree(heads);
+		}
+		Node* newtree = heads;
+		for (unsigned int i = 0;i < str.length();i++)
+		{
+			if (newtree->child[str[i] - 'a'] == NULL)
+			{
+				char c = str[i];
+				bool t = (i + 1 == str.length()) ? true : false;
+				int a = str[i] - 'a';
+				newitem(newtree, c, t, a);
+
+				if (i + 1 == str.length())
+				{
+					newtree->child[str[i] - 'a']->isend = true;
+				}
+			}
+
+			newtree = newtree->child[str[i] - 'a'];
+		}
+	}
+	void vivod(Node *tmp, unsigned int level = 1)
+	{
+		if (tmp == NULL)
+		{
+			return;
+		}
+		for (unsigned int i = 1; i < level; i++)
+		{
+			cout << "\t";
+		}
+		cout << tmp->key << ' ' << tmp->isend << endl;
+		for (int i = 0; i < alphabet; i++)
+		{
+			vivod(tmp->child[i], level + 1);
+		}
+	}
+private:
+	Node* head = NULL;
+	Node* invhead = NULL;
+public:
+
+	derevo()
+	{
+		head = NULL;
+	}
+	void zapolnenie(string str)
+	{
+		zapolnenie(head, str);
+	}
+	void creattree(Node*&heads)
+	{
+		heads = new Node;
+		heads->key = '~';
+		heads->isend = false;
+		for (int i = 0; i < alphabet; i++)
+		{
+			heads->child[i] = NULL;
+		}
+	}
+	void newitem(Node*ptr, char c, bool t, int a)
+	{
+		Node* newtree = new Node;
+		newtree->key = c;
+		newtree->isend = t;
+		for (unsigned int i = 0; i < alphabet; i++)
+		{
+			newtree->child[i] = NULL;
+		}
+		ptr->child[a] = newtree;
+	}
+	int search(string srt)
+	{
+		string trs = slvper(srt);
+		perevorotik(head, invhead);
+		cout << endl;
+		vivodinverstree();
+		Node *pv = invhead;
+		bool fl = true;
+		unsigned int i = 0;
+		while (fl&&i < trs.length())
+		{
+			if (pv->child[trs[i] - 'a'] != NULL)
+			{
+				pv = pv->child[trs[i] - 'a'];
+				i++;
+			}
+			else fl = false;
+
+		}
+		int klv = 0;
+		if (fl&&i == trs.length())
+		{
+			klv = podchet(pv, klv);
+		}
+		return klv;
+	}
+	int podchet(Node*pv, int klv)
+	{
+		if (pv == NULL)
+		{
+			return 0;
+		}
+		else if (pv->isend && !proverkanadetey(pv))
+		{
+			return 1;
+		}
+		else {
+			if (pv->isend)
+			{
+				klv++;
+			}
+			for (int i = 0; i < alphabet; i++)
+			{
+				klv = klv + podchet(pv->child[i], 0);
+			}
+			return klv;
+		}
+	}
+	bool proverkanadetey(Node* pv)
+	{
+		bool ft = false;
+		if (pv != NULL)
+		{
+			int i = 0;
+			while (!ft&&i < alphabet)
+			{
+				if (pv->child[i] != NULL)
+					ft = true;
+				i++;
+			}
+		}
+		return ft;
+	}
+	void perevorotik(Node* heads, Node*& first)
+	{
+		static string str;
+		if (heads == NULL)
+		{
+			return;
+		}
+		for (unsigned int i = 0;i < alphabet;i++)
+		{
+			if (heads->child[i] != NULL)
+			{
+				str += heads->child[i]->key;
+				if (heads->child[i]->isend && !proverkanadetey(heads))
+				{
+					string trs = slvper(str);
+					zapolnenie(first, trs);
+					str.pop_back();
+				}
+				else if (heads->child[i]->isend && proverkanadetey(heads))
+				{
+					string trs = slvper(str);
+					zapolnenie(first, trs);
+					perevorotik(heads->child[i], first);
+				}
+				else
+				{
+					perevorotik(heads->child[i], first);
+				}
+			}
+		}
+		str.erase(str.length());
+	}
+	string slvper(string str)
+	{
+		string trs = "";
+		int k = str.length();
+		for (int i = k - 1;i >= 0;i--)
+		{
+			trs += str[i];
+		}
+		return trs;
+	}
+	void vivodinverstree()
+	{
+		vivod(invhead);
+	}
+	void vivod()
+	{
+		vivod(head);
+	}
+};
+
+
+void main()
+{
+	setlocale(0, "");
+	derevo a;
+	string slv;
+	cout << "Вводите строки через пробел, а потом нажмите Enter:" << endl;
+	while (cin.peek() != '\n')
+	{
+		cin >> slv;
+		a.zapolnenie(slv);
+	}
+	a.vivod();
+	cout << "\nВведите окончание для поиска кол-ва слов:" << endl;
+	string ocn;
+	cin >> ocn;
+	int klv = a.search(ocn);
+	cout << "Кол-во слов с окончанием ( " << ocn << " ) = " << klv << endl;
+	system("pause");
+}
