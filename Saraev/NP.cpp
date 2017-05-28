@@ -87,7 +87,7 @@ public:
 			{
 				cout << " Enter the road " << (i + 1) << " - " << (j + 1) << ": ";
 				cin >> road;
-				if (road<0) road = MAX;
+				if (road<=0) road = MAX;
 
 				G[j][i] = G[i][j] = road;
 			}
