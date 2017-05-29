@@ -11,32 +11,20 @@ class Hash
 		int count;
 		Node *next;
 	};
-	Node **head;
+	
 	static const int tableSize = 26;
+	Node *head[tableSize];
 
 public:
 	
 	Hash()
 	{
-		head = new Node *[tableSize];
 		for (int i = 0; i < tableSize; i++)
+		{
 			head[i] = NULL;
+		}
 	}
-	~Hash()
-	{
-		for(int i=0; i<tableSize; i++)
-			if (head[i])
-			{
-				Node *temp;
-				while (head[i])
-				{
-					temp = head[i];
-					head[i] = head[i]->next;
-					temp = NULL;
-					delete temp;
-				}
-			}
-	}
+
 
 	int Index(string word)
 	{
@@ -54,51 +42,55 @@ public:
 	Node *Search(string word)
 	{
 		int index = Index(word);
+		
 		Node *temp = head[index];
 		while (temp && temp->word != word)
+		{
 			temp = temp->next;
+		}
+
 		return temp;
 	}
 
 	void InsertElement(string word)
 	{
-		if (word != "\0")
+		if (word == "\0")
 		{
-			Node *foundWord = Search(word);
-			int index = Index(word);
+			return;
+		}
+		Node *foundWord = Search(word);
+		int index = Index(word);
 
-			if (!foundWord)
-			{
-				Node *curr = new Node;
-				curr->word = word;
-				curr->count = 1;
-				head[index] = curr;
-			}
-			else
-			{
-				foundWord->count++;
-			}
+		if (!foundWord)
+		{
+			Node *curr = new Node;
+			curr->word = word;
+			curr->count = 1;
+			curr->next = NULL;
+			curr->next = head[index];
+			head[index] = curr;
+		}
+		else
+		{
+			foundWord->count++;
 		}
 	}
 
 	void Show()
 	{
-		cout << "Result is: \n";
+		cout << "Result is: ";
 		int sum = 0;
 
-		for(int i=0; i<tableSize; i++)
-			if (head[i])
+		for (int i = 0; i < tableSize; i++)
+		{
+			Node *temp = head[i];
+			while (temp)
 			{
-				Node *temp;
-				while (head[i])
-				{
-					temp = head[i];
-					if (temp->count > 5)
-						cout << temp->word << endl;
-					head[i] = head[i]->next;
-				}
+				if (temp->count > 5) sum++;
+				temp = temp->next;
 			}
-		delete[] head;
+		}
+		cout << sum << endl;
 	}
 
 };
