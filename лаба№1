@@ -1,0 +1,153 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+const int alphabet = 10;
+
+struct info
+{
+	string FIO, zarpl;
+};
+
+class privet
+{
+	struct Node
+	{
+		char key;
+		info qi;
+		bool isend;
+		Node* child[alphabet];
+	};
+	void show(Node *tmp, unsigned int level = 1)
+	{
+		if (tmp == NULL)
+		{
+			return;
+		}
+		for (unsigned int i = 1; i < level; i++)
+		{
+			cout << "\t";
+		}
+		cout << tmp->key << ' ' << tmp->qi.FIO << ' ' << tmp->qi.zarpl << endl;
+		for (int i = 0; i < alphabet; i++)
+		{
+			show(tmp->child[i], level + 1);
+		}
+	}
+private:
+	Node* head;
+
+public:
+
+	privet()
+	{
+		head = NULL;
+	}
+	void zapolnenie(string str, string fio, string zp)
+	{
+		if (head == NULL)
+		{
+			creattree();
+		}
+		Node* newtree = head;
+		for (unsigned int i = 0;i < str.length();i++)
+		{
+			if (newtree->child[str[i] - '0'] == NULL)
+			{
+				char c = str[i];
+				bool t = (i + 1 == str.length()) ? true : false;
+				int a = str[i] - '0';
+				if (t)
+					newitem(newtree, c, t, a, fio, zp);
+				else newitem(newtree, c, t, a, "-", "-");
+
+				if (i + 1 == str.length())
+				{
+					newtree->child[str[i] - '0']->isend = true;
+				}
+			}
+
+			newtree = newtree->child[str[i] - '0'];
+		}
+	}
+	void creattree()
+	{
+		head = new Node;
+		head->key = '~';
+		head->qi.FIO = '~';
+		head->qi.zarpl = '~';
+		head->isend = false;
+		for (int i = 0; i < alphabet; i++)
+		{
+			head->child[i] = NULL;
+		}
+	}
+	void newitem(Node*ptr, char c, bool t, int a, string fio, string zp)
+	{
+		Node* newtree = new Node;
+		newtree->key = c;
+		newtree->qi.FIO = fio;
+		newtree->qi.zarpl = zp;
+		newtree->isend = t;
+		for (int i = 0; i < alphabet; i++)
+		{
+			newtree->child[i] = NULL;
+		}
+		ptr->child[a] = newtree;
+	}
+	void poisk(string trs)
+	{
+		Node *pv = head;
+		bool fl = true;
+		int i = 0;
+		while (fl&&i < trs.length())
+		{
+			if (pv->child[trs[i] - '0'] != NULL)
+			{
+				pv = pv->child[trs[i] - '0'];
+				i++;
+			}
+			else fl = false;
+
+		}
+		if (fl&&i == trs.length())
+		{
+			vivod(pv, trs);
+		}
+		else cout << "Ошибка!" << endl;
+	}
+	void vivod(Node*pvt, string trs)
+	{
+		cout << "ФИО: " << pvt->qi.FIO << "Зарплата: " << pvt->qi.zarpl << "Искомы номер: " << trs << endl;
+	}
+	void show()
+	{
+		show(head);
+	}
+};
+
+
+void main()
+{
+	setlocale(0, "");
+	privet a;
+	string str1, str2, str3;
+	cout << "Вводите строки (табельный номер,ФИО, зарплата) через пробел, чтоб завершить введите 0 во все поля:" << endl;
+	cin >> str1;
+	cin >> str2;
+	cin >> str3;
+	while (str1 != "0" && str2 != "0" && str3 != "0")
+	{
+		a.zapolnenie(str1, str2, str3);
+		cin >> str1;
+		cin >> str2;
+		cin >> str3;
+	}
+	a.show();
+	cout << "\n\nВведите табельный номер для поиска:" << endl;
+	string trs;
+	cin >> trs;
+	a.poisk(trs);
+	system("pause");
+}
